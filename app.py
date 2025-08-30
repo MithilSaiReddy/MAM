@@ -10,6 +10,9 @@ import uuid
 import json
 import re
 from typing import Optional, Tuple
+import openai
+
+
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -26,9 +29,9 @@ app.add_middleware(
 )
 
 # ------------------ CONFIG ------------------
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "8MCQ1qpqvudUKeSWPzZr5HR7CV8e5IP5")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "8MCQ1qpqvudUKeSWPzZr5HR7CV8e5IP5 6")
 MISTRAL_MODEL_ID = "mistral-medium-latest"
-
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 QUERY_FOLDER = "queries"
 SINGLE_FILE = os.path.join(QUERY_FOLDER, "latest.py")
 os.makedirs(QUERY_FOLDER, exist_ok=True)
@@ -193,27 +196,24 @@ def parse_mistral_response(raw_resp: str, user_input: str) -> Tuple[str, str]:
     return question, answer
 
 def generate_mistral_code(prompt: str) -> str:
-    """Call the Mistral API."""
-    if not MISTRAL_API_KEY:
-        raise RuntimeError("MISTRAL_API_KEY environment variable is not set")
+    """Generate text/code using OpenAI API (ChatCompletion)."""
+    if not OPENAI_API_KEY:
+        raise RuntimeError("OPENAI_API_KEY environment variable is not set")
 
-    headers = {"Authorization": f"Bearer {MISTRAL_API_KEY}", "Content-Type": "application/json"}
-    payload = {"model": MISTRAL_MODEL_ID, "messages": [{"role": "user", "content": prompt}]}
-
-    resp = requests.post(
-        "https://api.mistral.ai/v1/chat/completions",
-        json=payload,
-        headers=headers,
-        timeout=60,
-    )
-    if resp.status_code != 200:
-        raise Exception(f"Mistral API error: {resp.status_code} {resp.text}")
-
-    data = resp.json()
     try:
-        return data["choices"][0]["message"]["content"]
-    except Exception:
-        return data.get("output", "") or str(data)
+        openai.api_key = OPENAI_API_KEY
+        response = openai.ChatCompletion.create(
+            model= "gpt-4o-2024-08-06", #"ft:gpt-4o-mini-2024-07-18:harsha:manim-reliable:CAK9K8EB",  #  or "gpt-4-32k" if needed
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=1500
+        )
+        content = response.choices[0].message.content
+        # Optional: remove markdown fences automatically
+        return content.strip().replace("```python", "").replace("```", "")
+    except Exception as e:
+        logger.exception("OpenAI API call failed: %s", e)
+        raise RuntimeError(f"OpenAI API failed: {e}")
 
 
 def auto_run_manim(file_path: str, task_id: str) -> str:
@@ -282,21 +282,21 @@ def generate_manim(query: Query):
         # 1. Generate code
         generated_code = clean_code(generate_mistral_code(f"""
 You are an expert senior Python programmer and senior Manim developer.
-Convert the following theory or question into a complete, runnable Manim Community v0.16+ script
-that can be understood evenn by a 5 years old.
-- Use colorful colors and use simple shapes as graphics.
+Convert the following theory or question into a complete, runnable Manim Community v0.16+ script.
+- Use colorful colors and use simple shapes as graphics and also use fun animations.
 - Include all necessary imports.
+- Explain the concept clearly.
 - Define a Scene class named GeneratedScene.
 - Code must be directly runnable with `manim -ql <filename>.py`.
 - Only provide code, no explanations.
 - Do NOT include any markdown fences.
 - Make animation visually appealing with smooth transitions.
 - Use contrasting colors for shapes.
-- Duration ~20-30 seconds.
+- Duration 20+ seconds.
 - Include smooth transitions (Create, FadeIn, Transform, etc.) when required.
 - Donot include any images create all by your self if possible.
 - Maintain aspect ration for 640x480 so keep all the things in that it self.
-- Donot overlap over each other.
+- The newly generated text frames should not overlap over each other(old text frames).
 Input:
 {query.text}
 """))

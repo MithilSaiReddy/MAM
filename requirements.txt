@@ -1,0 +1,13 @@
+# ------------------ Backend ------------------
+fastapi
+uvicorn[standard]
+pydantic
+requests
+openai
+
+# For running Manim scripts
+manim
+
+# ------------------ Frontend / Chat ------------------
+chainlit
+rapidfuzz
