@@ -281,18 +281,22 @@ def generate_manim(query: Query):
     try:
         # 1. Generate code
         generated_code = clean_code(generate_mistral_code(f"""
-You are an expert Python programmer and Manim developer.
-Convert the following theory or question into a complete, runnable Manim Community v0.16+ script.
+You are an expert senior Python programmer and senior Manim developer.
+Convert the following theory or question into a complete, runnable Manim Community v0.16+ script
+that can be understood evenn by a 5 years old.
+- Use colorful colors and use simple shapes as graphics.
 - Include all necessary imports.
 - Define a Scene class named GeneratedScene.
 - Code must be directly runnable with `manim -ql <filename>.py`.
 - Only provide code, no explanations.
 - Do NOT include any markdown fences.
-- Make animation visually appealing with smooth transitions
-- Use contrasting colors for shapes
-- Duration ~20-30 seconds
-- Include smooth transitions (Create, FadeIn, Transform, etc.)
-- Donot include any images create all by your self if possible
+- Make animation visually appealing with smooth transitions.
+- Use contrasting colors for shapes.
+- Duration ~20-30 seconds.
+- Include smooth transitions (Create, FadeIn, Transform, etc.) when required.
+- Donot include any images create all by your self if possible.
+- Maintain aspect ration for 640x480 so keep all the things in that it self.
+- Donot overlap over each other.
 Input:
 {query.text}
 """))
