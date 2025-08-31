@@ -1,0 +1,21 @@
+** note that you neet to give each question at a time**
+
+   1) Solve x+7=19x+7=19.
+
+   2) Solve 3x−5=163x−5=16.
+
+   3) Simplify 2(3x−4)−(x+1)2(3x−4)−(x+1).
+
+   4) Factor x2−9x+20x2−9x+20.
+
+   5) Find the area of a rectangle with length 1212 and width 55.
+
+   6) A triangle has angles 40∘40∘ and 65∘65∘; find the third angle.
+
+   7) A right triangle has legs 99 and 1212; find the hypotenuse.
+
+   8) A circle has radius 66; find the circumference CC (use π≈3.14π≈3.14).
+
+   9) In a right triangle with θ=30∘θ=30∘ and hypotenuse 1414, find the opposite side.
+
+   10) Given sin⁡θ=45sinθ=54 for acute θθ, find cos⁡θcosθ and tan⁡θtanθ.
