@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 # ------------------ CONFIG ------------------
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "8MCQ1qpqvudUKeSWPzZr5HR7CV8e5IP5 6")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY", "Add your key")
 MISTRAL_MODEL_ID = "mistral-medium-latest"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 QUERY_FOLDER = "queries"
